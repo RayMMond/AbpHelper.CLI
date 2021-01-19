@@ -1,12 +1,12 @@
 
         public {{ EntityInfo.Name }}(
             {{~ if EntityInfo.PrimaryKey ~}}
-            {{ EntityInfo.PrimaryKey }} id
+            {{ EntityInfo.PrimaryKey }} id,
             {{- end -}}
             {{- for prop in EntityInfo.Properties -}}
-            {{- if EntityInfo.PrimaryKey }},{{ end }}
+            {{""}}
             {{ prop.Type }} {{ prop.Name | abp.camel_case }}
-            {{- if for.last; "\r\n"; else; ; end -}}
+            {{- if for.last; "\r\n"; else; ","; end -}}
             {{- end ~}}
         ){{ if EntityInfo.PrimaryKey }} : base(id){{~ end }}
         {

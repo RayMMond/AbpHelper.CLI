@@ -60,7 +60,8 @@ namespace EasyAbp.AbpHelper.Steps.Abp
                 if (genericNameSyntax == null)
                 {
                     // No generic parameter -> Entity with Composite Keys
-                    baseType = baseList.Descendants<SimpleBaseTypeSyntax>().Single().Type.ToString();
+                    baseType = baseList.Descendants<SimpleBaseTypeSyntax>()
+                        .Single(node => !node.ToFullString().StartsWith("I")).Type.ToString();
                     primaryKey = null;
 
                     // Get composite keys
