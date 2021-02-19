@@ -28,7 +28,8 @@ namespace EasyAbp.AbpHelper.Generator
         public static string GetHttpVerb(MethodInfo method)
         {
             var verbs = HttpMethodHelper.ConventionalPrefixes.Keys.Select(prefix => $"Http{prefix}").ToList();
-            var verb = method.Attributes.FirstOrDefault(attr => verbs.Contains(attr, StringComparer.InvariantCultureIgnoreCase));
+            var verb = method.Attributes.FirstOrDefault(attr =>
+                verbs.Contains(attr, StringComparer.InvariantCultureIgnoreCase));
             if (verb == null)
             {
                 verb = HttpMethodHelper.GetConventionalVerbForMethodName(method.Name);
@@ -55,24 +56,32 @@ namespace EasyAbp.AbpHelper.Generator
             if (idParameterModel != null)
             {
                 var type = Type.GetType(idParameterModel.FullType);
-                if (TypeHelper.IsPrimitiveExtended(type, includeEnums: true))
+                if (type == null)
                 {
-                    url += "/{id}";
+                    url += "/TODO";
                 }
                 else
                 {
-                    var properties = type!
-                        .GetProperties(BindingFlags.Instance | BindingFlags.Public);
-
-                    foreach (var property in properties)
+                    if (TypeHelper.IsPrimitiveExtended(type, includeEnums: true))
                     {
-                        url += "/{" + property.Name + "}";
+                        url += "/{id}";
+                    }
+                    else
+                    {
+                        var properties = type!
+                            .GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+                        foreach (var property in properties)
+                        {
+                            url += "/{" + property.Name + "}";
+                        }
                     }
                 }
             }
 
             //Add action name if needed
-            string actionNameInUrl = HttpMethodHelper.RemoveHttpMethodPrefix(method.Name, HttpMethodHelper.GetConventionalVerbForMethodName(method.Name))
+            string actionNameInUrl = HttpMethodHelper.RemoveHttpMethodPrefix(method.Name,
+                        HttpMethodHelper.GetConventionalVerbForMethodName(method.Name))
                     .RemovePostFix("Async")
                 ;
             if (!actionNameInUrl.IsNullOrEmpty())
@@ -80,7 +89,8 @@ namespace EasyAbp.AbpHelper.Generator
                 url += $"/{actionNameInUrl.ToCamelCase()}";
 
                 //Add secondary Id
-                var secondaryIds = method.Parameters.Where(p => p.Name.EndsWith("Id", StringComparison.Ordinal)).ToList();
+                var secondaryIds = method.Parameters.Where(p => p.Name.EndsWith("Id", StringComparison.Ordinal))
+                    .ToList();
                 if (secondaryIds.Count == 1)
                 {
                     url += $"/{{{secondaryIds[0].Name}}}";

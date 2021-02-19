@@ -25,7 +25,8 @@ namespace EasyAbp.AbpHelper.Steps.Abp
             set => SetState(value);
         }
 
-        protected override async Task<ActivityExecutionResult> OnExecuteAsync(WorkflowExecutionContext context, CancellationToken cancellationToken)
+        protected override async Task<ActivityExecutionResult> OnExecuteAsync(WorkflowExecutionContext context,
+            CancellationToken cancellationToken)
         {
             var entityFile = await context.EvaluateAsync(EntityFile, cancellationToken);
             LogInput(() => entityFile);
@@ -65,7 +66,8 @@ namespace EasyAbp.AbpHelper.Steps.Abp
                     primaryKey = null;
 
                     // Get composite keys
-                    var getKeysMethod = root.Descendants<MethodDeclarationSyntax>().Single(m => m.Identifier.ToString() == "GetKeys");
+                    var getKeysMethod = root.Descendants<MethodDeclarationSyntax>()
+                        .Single(m => m.Identifier.ToString() == "GetKeys");
                     keyNames = getKeysMethod
                             .Descendants<InitializerExpressionSyntax>()
                             .First()
@@ -77,7 +79,8 @@ namespace EasyAbp.AbpHelper.Steps.Abp
                 {
                     // Normal entity
                     baseType = genericNameSyntax.Identifier.ToString();
-                    primaryKey = genericNameSyntax.Descendants<TypeArgumentListSyntax>().Single().Arguments[0].ToString();
+                    primaryKey = genericNameSyntax.Descendants<TypeArgumentListSyntax>().Single().Arguments[0]
+                        .ToString();
                 }
 
                 var properties = root.Descendants<PropertyDeclarationSyntax>()
